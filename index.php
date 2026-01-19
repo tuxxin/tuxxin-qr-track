@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $stmt = $db->prepare("INSERT INTO products (uuid, title, type, target_data, logo_path) VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([$uuid, $title, $type, $target, $logoPath]);
         
-        header("Location: /");
+        header("Location: " . BASE_URL);
         exit;
     }
     

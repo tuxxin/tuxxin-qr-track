@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // --- CLEANUP TRIGGER ---
         purge_old_tokens($db);
         
-        header("Location: /");
+        header("Location: " . BASE_URL);
         exit;
     } else {
         $error = "Invalid credentials.";

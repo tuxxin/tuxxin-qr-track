@@ -57,7 +57,7 @@ $apiUrl = BASE_URL . '/api.php';
             <h1>API Documentation</h1>
             <small style="color:#888;">Endpoint: <?= $apiUrl ?></small>
         </div>
-        <div><a href="/" style="color:white; text-decoration:none; background:#333; padding:8px 15px; border-radius:4px;">&larr; Dashboard</a></div>
+        <div><a href="<?= BASE_URL ?>" style="color:white; text-decoration:none; background:#333; padding:8px 15px; border-radius:4px;">&larr; Dashboard</a></div>
     </header>
 
     <?php if ($isDefaultKey): ?>

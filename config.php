@@ -11,13 +11,13 @@ define('API_KEY', 'change_me_to_a_random_string');
 
 // Site Settings
 define('BASE_URL', 'https://yourdomain.com'); 
-define('DB_PATH', '/home/user/db/tuxxin_qr.sqlite'); <-- Place outside of htdoc root
+define('DB_PATH', '/home/user/db/tuxxin_qr.sqlite');
 define('TIMEZONE', 'America/New_York');
 define('THEME_PATH', __DIR__ . '/themes');
-define('LOGO_DIR', '/home/user/tmp'); <-- Set for local tmp but can also use /tmp
+define('LOGO_DIR', '/home/user/tmp');
 
 // Network Settings (Enable when webservers behind tunnel like CloudFlare Zero Trust)
-define('USE_CLOUDFLARE_TUNNEL', true); <-- Used for scan statistics.
+define('USE_CLOUDFLARE_TUNNEL', true);
 
 // END OF CONFIGURATION
 
@@ -27,7 +27,7 @@ date_default_timezone_set(TIMEZONE);
 function require_auth() {
     if (session_status() === PHP_SESSION_NONE) session_start();
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-        header("Location: /login.php");
+        header("Location: login.php");
         exit;
     }
 }

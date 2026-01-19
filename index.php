@@ -1,6 +1,7 @@
 <?php
+// /home/qr.tuxxin.net/www/index.php
 require 'config.php';
-require_auth();
+require_auth(); // Secure Dashboard
 
 // --- HANDLE FORM SUBMISSIONS & ACTIONS ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
@@ -65,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $stmt = $db->prepare("INSERT INTO products (uuid, title, type, target_data, logo_path) VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([$uuid, $title, $type, $target, $logoPath]);
         
-        header("Location: " . BASE_URL);
+        header("Location: /");
         exit;
     }
     
@@ -267,23 +268,25 @@ include THEME_PATH . '/header.php';
                 else {
                     data.forEach(row => {
                         let statusBadge = '';
+                        // Badge logic moved here
                         if(row.scan_status === 'blocked') {
-                            statusBadge = '<span style="background:red; padding:2px 5px; border-radius:3px; font-size:0.7em;">DISABLED SCAN</span> ';
+                            statusBadge = '<div class="scan-badge">DISABLED SCAN</div>';
                         }
 
                         html += `
                         <div class="scan-row">
-                            <div>
-                                <strong style="color:white; font-size:1.1em;">${row.ip_address}</strong>
+                            <div style="padding-right:10px;">
+                                <div class="scan-ip">${row.ip_address}</div>
                                 <div style="color:#aaa; font-size:0.85em;">${row.geo.isp || 'Unknown ISP'}</div>
+                                ${statusBadge}
                             </div>
                             <div>
                                 <div style="color: var(--accent); font-weight:bold;">${row.geo.city}, ${row.geo.region}</div>
                                 <div style="color:#aaa; font-size:0.85em;">${row.geo.country}</div>
                             </div>
                             <div class="scan-meta">
-                                <div>${statusBadge} ${row.scanned_at}</div>
-                                <div style="font-size:0.75em; opacity:0.7; margin-top:4px;">${row.user_agent.substring(0, 60)}...</div>
+                                <div>${row.scanned_at}</div>
+                                <div style="font-size:0.75em; opacity:0.7; margin-top:4px; word-break: break-word;">${row.user_agent}</div>
                             </div>
                         </div>`;
                     });
@@ -291,6 +294,7 @@ include THEME_PATH . '/header.php';
                 document.getElementById('statsContent').innerHTML = html;
             })
             .catch(err => {
+                console.error(err);
                 document.getElementById('statsContent').innerHTML = '<p style="color:red">Error loading stats.</p>';
             });
     }

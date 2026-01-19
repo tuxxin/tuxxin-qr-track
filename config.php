@@ -23,18 +23,15 @@ define('USE_CLOUDFLARE_TUNNEL', true);
 
 
 // --- HELPER FUNCTIONS ---
-date_default_timezone_set(TIMEZONE);
 function require_auth() {
     if (session_status() === PHP_SESSION_NONE) session_start();
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-        header("Location: login.php");
+        header("Location: /login.php");
         exit;
     }
 }
 
-// Cleans up tokens older than 24 hours
 function purge_old_tokens($db) {
-    // Delete entries where expiration is in the past
     $db->exec("DELETE FROM api_tokens WHERE expires_at < datetime('now')");
 }
 
@@ -68,15 +65,24 @@ try {
         scan_status TEXT DEFAULT 'success', scanned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(product_uuid) REFERENCES products(uuid)
     )");
+
+    // --- MIGRATION: ADD GEO COLUMNS IF MISSING ---
+    // This allows us to cache the API results so we don't spam the IP-API service
+    $columns = $db->query("PRAGMA table_info(scans)")->fetchAll(PDO::FETCH_COLUMN, 1);
+    if (!in_array('geo_city', $columns)) {
+        $db->exec("ALTER TABLE scans ADD COLUMN geo_city TEXT");
+        $db->exec("ALTER TABLE scans ADD COLUMN geo_region TEXT");
+        $db->exec("ALTER TABLE scans ADD COLUMN geo_country TEXT");
+        $db->exec("ALTER TABLE scans ADD COLUMN geo_isp TEXT");
+    }
     
-    // NEW: Temporary API Tokens Table
+    // API Tokens Table
     $db->exec("CREATE TABLE IF NOT EXISTS api_tokens (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         token TEXT UNIQUE,
         product_uuid TEXT,
         expires_at DATETIME
     )");
-    // Index for faster lookups
     $db->exec("CREATE INDEX IF NOT EXISTS idx_api_token ON api_tokens(token)");
 
 } catch (PDOException $e) { die("Database Error: " . $e->getMessage()); }

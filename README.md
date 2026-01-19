@@ -66,13 +66,17 @@ Create, manage, and track QR codes for URLs, WiFi networks, vCards, and more—a
     * Toggle `USE_CLOUDFLARE_TUNNEL` based on your network.
 
     Edit `.htaccess`:
-    * Set `RewriteBase` to your root or sub-directory.
-  
+ 
     ```bash
     RewriteEngine On
+
+    # Update to your root or sub-directory
     RewriteBase /qr-track/
+
+    # Rewrite rule for QR Scan Proxy
     RewriteRule ^p/([a-zA-Z0-9]+)$ proxy.php?id=$1 [L,QSA]
 
+    # These files don't need to be seen!
     <FilesMatch "\.(sqlite|db|log)$">
        Order Deny,Allow
        Deny from all
